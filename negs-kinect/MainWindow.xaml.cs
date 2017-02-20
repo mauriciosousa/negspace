@@ -329,17 +329,24 @@ namespace Microsoft.Samples.Kinect.ColorBasics
 
                     }//
 
-                        
 
-                    if (__AvatarData__.Count > 0)
+                    int numOfElements = __AvatarData__.Count;
+                    if (numOfElements > 0)
                     {
                         if (_tcp.Connected)
                         {
                             new Thread(() =>
                             {
                                 Thread.CurrentThread.IsBackground = true;
+
                                 try
                                 {
+
+                                    byte[] s = BitConverter.GetBytes(numOfElements); // [4]
+                                    for (int i = s.Length - 1; i >= 0; i--)
+                                    {
+                                        __AvatarData__.Insert(0, s[i]);
+                                    }
                                     _tcp.write(__AvatarData__.ToArray());
                                 }
                                 catch (Exception e)
